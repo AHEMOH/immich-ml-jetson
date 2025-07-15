@@ -1,38 +1,54 @@
-# Optimierte Base für JetPack 5.1 mit CUDA 11.4
+# ----------------------------------------
+# Dockerfile für Immich ML auf Jetson Xavier
+# Basis: dustynv/nano_llm:r35.4.1 (JetPack 5.1 mit CUDA 11.4)
+# ----------------------------------------
+
+# 1. Optimierte Basis mit vorinstallierten Jetson-Optimierungen
 FROM dustynv/nano_llm:r35.4.1
 
-# 1. System-Dependencies
+# 2. System-Pakete installieren (Protobuf, pip, setuptools)
+#    - protobuf-compiler für UFF/ONNX-Konvertierung
+#    - Python-Build-Tools für spätere pip-Installationen
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-      python3-setuptools \
       python3-pip \
+      python3-setuptools \
       protobuf-compiler \
       libprotobuf-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# 2. Pip & Build-Tools aktualisieren
-RUN pip3 install --upgrade pip setuptools wheel
+# 3. Pip, setuptools und wheel auf neueste Version heben
+RUN pip3 install --upgrade pip setuptools wheel \
+    --index-url https://pypi.org/simple \
+    --no-cache-dir
 
-# 3. Aiocache aus Git installieren
-RUN pip3 install --no-build-isolation --no-cache-dir "git+https://github.com/aio-libs/aiocache.git@v0.12.3#egg=aiocache"
+# 4. Aiocache direkt aus Git installieren (ohne Build-Isolation)
+RUN pip3 install --no-build-isolation --no-cache-dir \
+    "git+https://github.com/aio-libs/aiocache.git@v0.12.3#egg=aiocache"
 
-# 4. Weitere Python-Pakete installieren
+# 5. Wichtige Framework-Pakete von PyPI installieren
+#    - pydantic-settings: Settings-Management Pydantic v2
+#    - rich: verbesserte Konsolenausgabe
+#    - FastAPI & Uvicorn & Gunicorn für Web-Server
+#    - python-multipart & orjson für Uploads & JSON-Performance
 RUN pip3 install --no-cache-dir \
     --index-url https://pypi.org/simple \
     "pydantic-settings>=2.5.2,<3" \
     rich \
-    fastapi uvicorn[standard] gunicorn python-multipart orjson
-    
-# Jetson-spezifische Pakete (falls vom Jetson-Index benötigt)
-# 1. Wheel aus Jetson-Index herunterladen und installieren
-#RUN pip3 install --no-cache-dir \
-#    https://jetson.webredirect.org/jp5/cu114/opencv_python-4.10.0-py3-none-any.whl
+    fastapi \
+    "uvicorn[standard]>=0.22.0,<1.0" \
+    gunicorn \
+    python-multipart \
+    orjson
+
+# 6. OpenCV als System-Paket (ARM64-kompatibel)
+#    - python3-opencv liefert cv2 für Jetson
 RUN apt-get update && \
     apt-get install -y --no-install-recommends python3-opencv && \
     rm -rf /var/lib/apt/lists/*
 
-
-#core ML
+# 7. Core-ML-Abhängigkeiten installieren
+#    - NumPy, SciPy, scikit-learn, tqdm, sentencepiece, huggingface-hub
 RUN pip3 install --no-cache-dir \
     --index-url https://pypi.org/simple \
     numpy>=1.21.0 \
@@ -42,34 +58,35 @@ RUN pip3 install --no-cache-dir \
     sentencepiece \
     huggingface-hub
 
-#
+# 8. Sentence-Transformers (nur Python-Code, keine Neuauflösung der Dependencies)
 RUN pip3 install --no-cache-dir \
     --index-url https://pypi.org/simple \
     sentence-transformers --no-deps
 
-# Die übrigen Pakete wie gewohnt installieren (über PyPI)
+# 9. Weitere ML-Bibliotheken installieren
+#    - Transformers, Torch (inkl. torchvision, torchaudio)
 RUN pip3 install --no-cache-dir \
-    pillow numpy transformers \
-    torch torchvision torchaudio
+    --index-url https://pypi.org/simple \
+    pillow \
+    transformers \
+    torch \
+    torchvision \
+    torchaudio
 
-# Arbeitsverzeichnis setzen
+# 10. Arbeitsverzeichnis für Immich-ML setzen
 WORKDIR /usr/src
 
-# Zusätzliche Immich-spezifische Pakete installieren
-RUN pip3 install --no-cache-dir "python-multipart>=0.0.6,<1.0"
-RUN pip3 install --no-cache-dir "orjson>=3.9.5"
-
-# Immich ML Code kopieren
+# 11. Immich ML-Code aus dem offiziellen Release-Image kopieren
 COPY --from=ghcr.io/immich-app/immich-machine-learning:release /usr/src ./
 
-# Umgebungsvariablen
-ENV PYTHONPATH=/usr/src
-ENV TRANSFORMERS_CACHE=/cache
-ENV TORCH_HOME=/cache
-ENV DEVICE=cuda
+# 12. Umgebungsvariablen
+ENV PYTHONPATH=/usr/src \
+    TRANSFORMERS_CACHE=/cache \
+    TORCH_HOME=/cache \
+    DEVICE=cuda
 
-# Port freigeben
+# 13. Port freigeben (Standard ML-Service-Port)
 EXPOSE 3003
 
-# Startbefehl
+# 14. Startbefehl
 CMD ["python3", "-m", "immich_ml"]
