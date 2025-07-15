@@ -82,6 +82,10 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends python3-opencv && \
     rm -rf /var/lib/apt/lists/*
 
+# OpenCV-Python für ARM64 installieren
+RUN pip3 install --no-cache-dir opencv-python-aarch64
+
+
 # 10. Immich ML-Code aus offiziellem Release-Image kopieren
 COPY --from=ghcr.io/immich-app/immich-machine-learning:release /usr/src ./
 
