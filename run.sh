@@ -3,6 +3,7 @@ set -euo pipefail
 
 # -------------------------------------------------------------------
 # run.sh – Immich ML-Container auf Jetson Xavier mit GPU- und Health-Checks
+# (angepasst für tegrastats statt nvidia-smi)
 # -------------------------------------------------------------------
 
 # 0. Konfiguration
@@ -22,14 +23,6 @@ export IMMICH_VERSION="release"
 
 # 2. Cache-Verzeichnis anlegen (persistent für Modelle)
 mkdir -p "$CACHE_DIR"
-
-# 3. Prüfen: Docker GPU-Zugriff (Host-nvidia-smi)
-echo "Prüfe GPU-Zugriff auf Host via nvidia-smi…"
-if ! nvidia-smi >/dev/null 2>&1; then
-  echo "Fehler: Host-GPU nicht erreichbar!" >&2
-  exit 1
-fi
-echo "Host-GPU OK."
 
 # 4. Pre-Check: ONNX & Torch im Image
 echo "Prüfe ONNX & Torch GPU-Support im Image…"
@@ -65,8 +58,6 @@ docker run -d \
   -e IMMICH_VERSION="${IMMICH_VERSION}" \
   "${IMAGE_NAME}"
 
-# 8. Post-Start: GPU-Nutzung am Host prüfen
-echo "Prüfe GPU-Nutzung auf Host via nvidia-smi…"
-nvidia-smi
+
 
 echo "Container ${CONTAINER_NAME} läuft erfolgreich mit GPU-Unterstützung auf Port 3003."
