@@ -25,8 +25,12 @@ RUN pip3 install --no-cache-dir \
     
 # Jetson-spezifische Pakete (falls vom Jetson-Index benötigt)
 # 1. Wheel aus Jetson-Index herunterladen und installieren
-RUN pip3 install --no-cache-dir \
-    https://jetson.webredirect.org/jp5/cu114/opencv_python-4.10.0-py3-none-any.whl
+#RUN pip3 install --no-cache-dir \
+#    https://jetson.webredirect.org/jp5/cu114/opencv_python-4.10.0-py3-none-any.whl
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3-opencv && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # 2. Die übrigen Pakete wie gewohnt installieren (über PyPI)
 RUN pip3 install --no-cache-dir \
