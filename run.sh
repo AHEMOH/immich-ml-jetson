@@ -18,13 +18,6 @@ export IMMICH_VERSION="release"
 # 2. Cache-Verzeichnis anlegen
 mkdir -p "$CACHE_DIR"
 
-# 3. Vor-Check: Docker GPU-Zugriff
-echo "Prüfe GPU-Zugriff via nvidia-smi..."
-docker run --rm --gpus all nvidia/cuda:11.0.3-base-ubuntu20.04 nvidia-smi || {
-  echo "Fehler: Keine GPU in Docker erreichbar!" >&2
-  exit 1
-}
-
 # 4. Vor-Check: Container-Inferenz-Test (ONNX + Torch)
 echo "Prüfe ONNX und Torch im Image..."
 docker run --rm --gpus all \
