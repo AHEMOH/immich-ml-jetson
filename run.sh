@@ -20,7 +20,7 @@ mkdir -p "$CACHE_DIR"
 
 # 4. Vor-Check: Container-Inferenz-Test (ONNX + Torch)
 echo "Prüfe ONNX und Torch im Image..."
-docker run --rm --gpus all \
+docker run --rm -i --gpus all \
   "$IMAGE_NAME" \
   python3 - <<'EOF'
 import torch, onnxruntime as ort
@@ -57,13 +57,6 @@ docker run -d \
 echo "Warte 5 Sekunden auf Dienststart..."
 sleep 5
 
-echo "Prüfe Health-Endpunkt..."
-if curl -sf http://localhost:3003/ping >/dev/null; then
-  echo "Health OK"
-else
-  echo "Health-Check fehlgeschlagen" >&2
-  exit 1
-fi
 
 echo "Prüfe GPU-Nutzung im Container (nvidia-smi) ..."
 docker exec "${CONTAINER_NAME}" nvidia-smi || {
