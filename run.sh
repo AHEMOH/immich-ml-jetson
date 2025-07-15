@@ -41,15 +41,5 @@ docker run -d \
   -e IMMICH_VERSION="${IMMICH_VERSION}" \
   "${IMAGE_NAME}"
 
-# 7. Post-Check: Dienst-Health und GPU-Log
-echo "Warte 5 Sekunden auf Dienststart..."
-sleep 5
 
-
-echo "Prüfe GPU-Nutzung im Container (nvidia-smi) ..."
-docker exec "${CONTAINER_NAME}" nvidia-smi || {
-  echo "Fehler: nvidia-smi im Container fehlgeschlagen" >&2
-  exit 1
-}
-
-echo "Container ${CONTAINER_NAME} läuft mit GPU-Unterstützung auf Port 3003."
+echo "Container ${CONTAINER_NAME} läuft auf Port 3003."
