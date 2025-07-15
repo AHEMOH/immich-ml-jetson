@@ -20,7 +20,7 @@ mkdir -p "$CACHE_DIR"
 
 # 3. Vor-Check: Docker GPU-Zugriff
 echo "Prüfe GPU-Zugriff via nvidia-smi..."
-docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi || {
+docker run --rm --gpus all nvidia/cuda:11.0.3-base-ubuntu20.04 nvidia-smi || {
   echo "Fehler: Keine GPU in Docker erreichbar!" >&2
   exit 1
 }
