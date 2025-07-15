@@ -14,7 +14,7 @@ RUN apt-get update && \
 RUN pip3 install --upgrade pip setuptools wheel
 
 # 3. Aiocache aus Git installieren
-RUN pip3 install --no-cache-dir "git+https://github.com/aio-libs/aiocache.git@v0.12.3#egg=aiocache"
+RUN pip3 install --no-build-isolation --no-cache-dir "git+https://github.com/aio-libs/aiocache.git@v0.12.3#egg=aiocache"
 
 # 4. Weitere Python-Pakete installieren
 RUN pip3 install --no-cache-dir \
