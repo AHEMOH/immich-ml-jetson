@@ -71,12 +71,12 @@ RUN pip3 install --no-cache-dir \
     --index-url https://pypi.org/simple \
     onnxruntime
 
-#  Für CUDA/GPU-Beschleunigung (Python 3.10 / CUDA 11.x):
-#  (angepasst an deine JetPack-Version, z.B. jp5/cu114)
+# ONNX Runtime GPU für Python 3.10 installieren
 RUN wget -qO onnxruntime_gpu.whl \
-    https://pypi.jetson-ai-lab.dev/jp5/cu114/onnxruntime_gpu-1.20.2-cp310-cp310-linux_aarch64.whl && \
+    https://github.com/ultralytics/assets/releases/download/v0.0.0/onnxruntime_gpu-1.20.0-cp310-cp310-linux_aarch64.whl && \
     pip3 install --no-cache-dir onnxruntime_gpu.whl && \
     rm onnxruntime_gpu.whl
+
 
 # 10. Immich ML-Code aus offiziellem Release-Image kopieren
 COPY --from=ghcr.io/immich-app/immich-machine-learning:release /usr/src ./
