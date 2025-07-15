@@ -57,10 +57,17 @@ RUN pip3 install --no-cache-dir sentence-transformers --no-deps
 # 8. Weitere ML-Bibliotheken installieren
 RUN pip3 install --no-cache-dir \
     pillow \
-    transformers \
-    torch \
-    torchvision \
-    torchaudio
+    transformers
+
+
+# NVIDIA L4T Wheels für Torch mit CUDA 11.4
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      python3-pip python3-wheel && \
+    pip3 install --no-cache-dir \
+      --extra-index-url https://pypi.ngc.nvidia.com \
+      torch torchvision torchaudio
+
 
 # 9. Arbeitsverzeichnis setzen
 WORKDIR /usr/src
