@@ -59,6 +59,7 @@ RUN pip3 install --no-cache-dir \
     pillow \
     transformers
 
+RUN pip3 uninstall -y torch torchvision torchaudio
 
 # NVIDIA L4T Wheels für Torch mit CUDA 11.4
 RUN apt-get update && \
