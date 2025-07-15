@@ -77,6 +77,11 @@ RUN wget -qO onnxruntime_gpu-1.20.0-cp310-cp310-linux_aarch64.whl \
     pip3 install --no-cache-dir onnxruntime_gpu-1.20.0-cp310-cp310-linux_aarch64.whl && \
     rm onnxruntime_gpu-1.20.0-cp310-cp310-linux_aarch64.whl
 
+# System-Paket für OpenCV-Python installieren
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3-opencv && \
+    rm -rf /var/lib/apt/lists/*
+
 # 10. Immich ML-Code aus offiziellem Release-Image kopieren
 COPY --from=ghcr.io/immich-app/immich-machine-learning:release /usr/src ./
 
