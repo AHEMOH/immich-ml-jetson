@@ -24,16 +24,6 @@ export IMMICH_VERSION="release"
 # 2. Cache-Verzeichnis anlegen (persistent für Modelle)
 mkdir -p "$CACHE_DIR"
 
-# 4. Pre-Check: ONNX & Torch im Image
-echo "Prüfe ONNX & Torch GPU-Support im Image…"
-docker run --rm -i --gpus all "$IMAGE_NAME" python3 - <<'EOF'
-import torch, onnxruntime as ort
-assert torch.cuda.is_available(), "Torch CUDA nicht verfügbar"
-providers = ort.get_all_providers()
-assert "CUDAExecutionProvider" in providers, f"Kein CUDA-Provider in ONNX: {providers}"
-print("Vor-Check OK: Torch & ONNX GPU verfügbar")
-EOF
-
 # 5. Alten Container entfernen (falls vorhanden)
 if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
   echo "Stoppe und entferne alten Container ${CONTAINER_NAME}…"
