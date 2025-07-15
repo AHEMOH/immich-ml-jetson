@@ -18,11 +18,15 @@ RUN pip3 install --no-build-isolation --no-cache-dir "git+https://github.com/aio
 
 # 4. Weitere Python-Pakete installieren
 RUN pip3 install --no-cache-dir \
+    --index-url https://pypi.org/simple \
+    "pydantic-settings>=2.5.2,<3" \
     rich \
-    pydantic-settings \
-    fastapi uvicorn[standard] gunicorn python-multipart orjson \
-    torch torchvision torchaudio \
-    opencv-python-headless pillow numpy transformers sentence-transformers
+    fastapi uvicorn[standard] gunicorn python-multipart orjson
+    
+# Jetson-spezifische Pakete (falls vom Jetson-Index benötigt)
+RUN pip3 install --no-cache-dir \
+    opencv-python-headless pillow numpy transformers sentence-transformers \
+    torch torchvision torchaudio
 
 # Arbeitsverzeichnis setzen
 WORKDIR /usr/src
