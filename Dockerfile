@@ -6,6 +6,17 @@
 # 1. Optimiertes Base-Image mit Ubuntu + Python 3.10 auf ARM64
 FROM balenalib/jetson-xavier-nx-devkit-ubuntu-python:3.10-latest-build
 
+# 1. Noninteractive Modus aktivieren
+ENV DEBIAN_FRONTEND=noninteractive
+# 2. Zeitzone setzen
+ENV TZ=Europe/Berlin
+
+# 3. tzdata installieren ohne Prompt
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
+
+
 # 2. Systemabhängigkeiten installieren
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
