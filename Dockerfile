@@ -32,9 +32,24 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 
-# 2. Die übrigen Pakete wie gewohnt installieren (über PyPI)
+#core ML
 RUN pip3 install --no-cache-dir \
-    pillow numpy transformers sentence-transformers \
+    --index-url https://pypi.org/simple \
+    numpy>=1.21.0 \
+    scipy \
+    scikit-learn \
+    tqdm \
+    sentencepiece \
+    huggingface-hub
+
+#
+RUN pip3 install --no-cache-dir \
+    --index-url https://pypi.org/simple \
+    sentence-transformers --no-deps
+
+# Die übrigen Pakete wie gewohnt installieren (über PyPI)
+RUN pip3 install --no-cache-dir \
+    pillow numpy transformers \
     torch torchvision torchaudio
 
 # Arbeitsverzeichnis setzen
