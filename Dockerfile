@@ -5,9 +5,9 @@ FROM dustynv/nano_llm:r35.4.1
 WORKDIR /usr/src
 
 # Zusätzliche Immich-spezifische Pakete installieren
-RUN pip3 install --no-cache-dir aiocache>=0.12.1,<1.0
-RUN pip3 install --no-cache-dir python-multipart>=0.0.6,<1.0
-RUN pip3 install --no-cache-dir orjson>=3.9.5
+RUN pip3 install --no-cache-dir "aiocache>=0.12.1,<1.0"
+RUN pip3 install --no-cache-dir "python-multipart>=0.0.6,<1.0"
+RUN pip3 install --no-cache-dir "orjson>=3.9.5"
 
 
 # Immich ML Code kopieren
