@@ -1,5 +1,5 @@
-# Verwende nano_llm als optimierte Basis
-FROM dustynv/nano_llm:24.7-r35.2.1
+# Optimierte Base für JetPack 5.1 mit CUDA 11.4
+FROM dustynv/nano_llm:r35.4.1
 
 # Arbeitsverzeichnis setzen
 WORKDIR /usr/src
@@ -13,12 +13,11 @@ RUN pip3 install --no-cache-dir \
 # Immich ML Code kopieren
 COPY --from=ghcr.io/immich-app/immich-machine-learning:release /usr/src ./
 
-# Umgebungsvariablen für Jetson Xavier
+# Umgebungsvariablen
 ENV PYTHONPATH=/usr/src
 ENV TRANSFORMERS_CACHE=/cache
 ENV TORCH_HOME=/cache
 ENV DEVICE=cuda
-ENV MACHINE_LEARNING_CACHE_FOLDER=/cache
 
 # Port freigeben
 EXPOSE 3003
