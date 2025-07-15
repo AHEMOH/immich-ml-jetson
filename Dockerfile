@@ -6,6 +6,24 @@
 # 1. Optimierte Basis mit vorinstallierten Jetson-Optimierungen
 FROM dustynv/nano_llm:r35.4.1
 
+# System-Tools installieren und Python 3.10 hinzufügen
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      software-properties-common \
+      python3.10 \
+      python3.10-venv \
+      python3.10-distutils \
+      python3.10-dev \
+      curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# `python3` und `pip3` auf Version 3.10 umschalten
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 && \
+    curl -sS https://bootstrap.pypa.io/get-pip.py | python3
+
+# Bestätigen, dass die neue Version aktiv ist
+RUN python3 --version && pip3 --version
+
 # 2. System-Pakete installieren (Protobuf, pip, setuptools)
 #    - protobuf-compiler für UFF/ONNX-Konvertierung
 #    - Python-Build-Tools für spätere pip-Installationen
