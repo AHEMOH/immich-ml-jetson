@@ -86,7 +86,9 @@ RUN apt-get update && \
 RUN pip3 install --no-cache-dir \
     --index-url https://pypi.org/simple \
     opencv-python
-
+    
+# InsightFace für Gesichtserkennung installieren
+RUN pip3 install --no-cache-dir "insightface>=0.7.3,<1.0"
 
 # 10. Immich ML-Code aus offiziellem Release-Image kopieren
 COPY --from=ghcr.io/immich-app/immich-machine-learning:release /usr/src ./
