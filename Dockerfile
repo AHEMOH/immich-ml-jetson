@@ -24,8 +24,13 @@ RUN pip3 install --no-cache-dir \
     fastapi uvicorn[standard] gunicorn python-multipart orjson
     
 # Jetson-spezifische Pakete (falls vom Jetson-Index benötigt)
+# 1. Wheel aus Jetson-Index herunterladen und installieren
 RUN pip3 install --no-cache-dir \
-    opencv-python-headless pillow numpy transformers sentence-transformers \
+    https://jetson.webredirect.org/jp5/cu114/opencv_python-4.10.0-py3-none-any.whl
+
+# 2. Die übrigen Pakete wie gewohnt installieren (über PyPI)
+RUN pip3 install --no-cache-dir \
+    pillow numpy transformers sentence-transformers \
     torch torchvision torchaudio
 
 # Arbeitsverzeichnis setzen
